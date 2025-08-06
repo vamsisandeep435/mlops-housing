@@ -9,6 +9,9 @@ import os
 import logging
 from datetime import datetime
 import sqlite3
+from fastapi import File, UploadFile
+from sklearn.linear_model import LinearRegression
+
 
 # Load model
 model_path = os.path.join(os.path.dirname(__file__), "..", "models", "model.pkl")
@@ -79,6 +82,46 @@ def predict_price(input: HousingInput):
     conn.close()
 
     return {"predicted_price": log_data["prediction"]}
+
+@app.post("/retrain")
+def retrain_model(file: UploadFile = File(...)):
+    try:
+        # Step 1: Load the new data from uploaded file
+        new_data = pd.read_csv(file.file)
+
+        # Step 2: Validate columns
+        expected_cols = ['MedInc', 'HouseAge', 'AveRooms', 'AveBedrms',
+                         'Population', 'AveOccup', 'Latitude', 'Longitude', 'target']
+        if not all(col in new_data.columns for col in expected_cols):
+            return {"error": f"Invalid columns in uploaded file. Expected columns: {expected_cols}"}
+
+        # Step 3: Load original training data
+        original_data = pd.read_csv("data/housing.csv")  # Ensure this file exists in your repo
+
+        # Step 4: Combine old + new data
+        combined_data = pd.concat([original_data, new_data], ignore_index=True)
+
+        X = combined_data.drop("target", axis=1)
+        y = combined_data["target"]
+
+        # Step 5: Retrain model
+        new_model = LinearRegression()
+        new_model.fit(X, y)
+
+        # Step 6: Save updated model
+        joblib.dump(new_model, model_path)
+
+        # Step 7: Log retraining
+        with open("logs/retraining.log", "a") as logf:
+            logf.write(f"{datetime.now().isoformat()} - Retrained model on {len(combined_data)} rows "
+                       f"(new rows: {len(new_data)}).\n")
+
+        return {"message": "Model retrained and saved successfully."}
+
+    except Exception as e:
+        return {"error": str(e)}
+
+
 
 # ✅ Prometheus metrics endpoint
 @app.get("/metrics")
