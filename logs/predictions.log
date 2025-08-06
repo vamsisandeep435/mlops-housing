@@ -1,0 +1,1 @@
+2025-08-06 14:29:27,706 INFO {'timestamp': '2025-08-06T14:29:27.706213', 'input': {'MedInc': 1.5, 'HouseAge': 15.0, 'AveRooms': 5.2, 'AveBedrms': 1.0, 'Population': 1200.0, 'AveOccup': 3.0, 'Latitude': 34.05, 'Longitude': -118.24}, 'prediction': np.float64(1.165)}
