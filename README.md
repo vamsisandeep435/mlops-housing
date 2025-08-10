@@ -18,18 +18,21 @@ This project demonstrates a complete MLOps pipeline using the **California Housi
 ```
 mlops-housing/
 │
-├── data/                  # Raw dataset CSV
-├── models/                # Saved models (.pkl)
-├── logs/                  # Prediction logs & SQLite DB
+├── data/ # Dataset CSV
+├── models/ # Trained models
+├── logs/ # Logs & SQLite DB
 ├── src/
-│   ├── train.py           # Model training with MLflow tracking
-│   ├── evaluate.py        # Evaluation script
-│   ├── api.py             # FastAPI app for prediction + metrics
+│ ├── train.py # Model training + MLflow logging
+│ ├── evaluate.py # Model evaluation
+│ ├── api.py # FastAPI app (prediction, metrics, retrain)
+│ ├── test_retrain.py # Test script for retraining endpoint
 │
-├── Dockerfile             # Docker setup for API
-├── requirements.txt       # Project dependencies
-├── .github/workflows/     # GitHub Actions CI/CD workflow
-└── README.md              # Project overview
+├── prometheus.yml # Prometheus scrape config
+├── Dockerfile # API Dockerfile
+├── docker-compose.yml # Prometheus + Grafana setup
+├── requirements.txt # Dependencies
+├── .github/workflows/ci.yml # GitHub Actions pipeline
+└── README.md # Project documentation
 ```
 
 ---
@@ -52,14 +55,18 @@ mlops-housing/
 
 ---
 
-## 🌐 Part 3: API & Docker
+## 🌐 Part 3: API Development & Dockerization
 
-- Developed REST API using **FastAPI**
-- Accepts input JSON and returns price prediction
-- Dockerized with:
-  ```bash
-  docker build -t housing-predictor .
-  docker run -p 8000:8000 housing-predictor
+- FastAPI app with:
+  - `/predict` → Predict house price
+  - `/metrics` → Prometheus metrics
+  - `/custom-metrics` → SQLite-based aggregated metrics
+  - `/retrain` → Upload new CSV → retrain model
+
+- Build & run:
+```bash
+docker build -t housing-predictor .
+docker run -p 8000:8000 housing-predictor
   ```
 
 ---
@@ -99,12 +106,16 @@ curl http://localhost:8000/metrics
 
 ---
 
-## 🎁 Bonus Features
+🎯 Bonus Features
+✅ Input validation via Pydantic
 
-- ✅ Input validation with `pydantic`
-- ✅ `/metrics` endpoint for monitoring
-- 🛠️ Prometheus/Grafana support (optional setup)
-- 🔁 Ready for model re-training with new data
+✅ Prometheus integration for monitoring
+
+✅ Grafana dashboards
+
+✅ Model retraining via /retrain endpoint
+
+✅ Test script (test_retrain.py) auto-generates CSV and tests retraining
 
 ---
 
@@ -112,10 +123,11 @@ curl http://localhost:8000/metrics
 
 > 📹 See `demo.mp4` for 5-min walkthrough
 
+
 ---
 
 ## 📅 Last Updated
-**August 06, 2025**
+**August 10, 2025**
 
 ---
 
