@@ -5,6 +5,15 @@ This project demonstrates a complete MLOps pipeline using the **California Housi
 
 ---
 
+## 📌 Project Team - Group 67
+
+1. Sandeep Eddula - 2023AC05558
+2. Omkar Manoj Kumar Dubal - 2023AB05156
+3. Debanjali Dey - 2023AD05073
+4. Akash Deep Bhattacharya - 2023AD05104
+
+
+
 ## 📌 Project Overview
 
 - **Model Type**: Regression (Linear Regression & Decision Tree Regressor)
@@ -12,6 +21,8 @@ This project demonstrates a complete MLOps pipeline using the **California Housi
 - **Frameworks**: Scikit-learn, FastAPI, Docker, GitHub Actions, MLflow
 
 ---
+
+
 
 ## 📁 Project Structure
 
